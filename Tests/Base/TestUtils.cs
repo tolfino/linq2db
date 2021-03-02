@@ -113,6 +113,7 @@ namespace Tests
 				case ProviderName.SqlServer2017:
 				case TestProvName.SqlServer2019:
 				case TestProvName.SqlServer2019SequentialAccess:
+				case TestProvName.SqlServer2019FastExpressionCompiler:
 				case TestProvName.SqlAzure:
 				case ProviderName.SapHanaNative:
 				case ProviderName.SapHanaOdbc:
@@ -142,6 +143,7 @@ namespace Tests
 				case ProviderName.SqlServer2017:
 				case TestProvName.SqlServer2019:
 				case TestProvName.SqlServer2019SequentialAccess:
+				case TestProvName.SqlServer2019FastExpressionCompiler:
 				case TestProvName.SqlAzure:
 				case ProviderName.OracleManaged:
 				case ProviderName.OracleNative:
@@ -225,6 +227,7 @@ namespace Tests
 				case ProviderName.SqlServer2017:
 				case TestProvName.SqlServer2019:
 				case TestProvName.SqlServer2019SequentialAccess:
+				case TestProvName.SqlServer2019FastExpressionCompiler:
 				case TestProvName.SqlAzure:
 					return db.GetTable<LinqDataTypes>().Select(_ => DbName()).First();
 				case ProviderName.Informix:
@@ -343,6 +346,54 @@ namespace Tests
 		public static TempTable<T> CreateLocalTable<T>(this IDataContext db, IEnumerable<T> items, bool insertInTransaction = false)
 		{
 			return CreateLocalTable(db, null, items, insertInTransaction);
+		}
+
+		public static string GetValidCollationName(string providerName)
+		{
+			switch (providerName)
+			{
+				case ProviderName.OracleNative                       :
+				case ProviderName.OracleManaged                      :
+					return "latin_AI";
+				case ProviderName.DB2                                :
+					return "SYSTEM_923_DE";
+				case ProviderName.PostgreSQL                         :
+				case ProviderName.PostgreSQL92                       :
+				case ProviderName.PostgreSQL93                       :
+				case ProviderName.PostgreSQL95                       :
+				case TestProvName.PostgreSQL10                       :
+				case TestProvName.PostgreSQL11                       :
+				case TestProvName.PostgreSQL12                       :
+				case TestProvName.PostgreSQL13                       :
+					return "POSIX";
+				case ProviderName.SQLiteClassic                      :
+				case ProviderName.SQLiteMS                           :
+				case TestProvName.SQLiteClassicMiniProfilerMapped    :
+				case TestProvName.SQLiteClassicMiniProfilerUnmapped  :
+					return "NOCASE";
+				case ProviderName.Firebird                           :
+				case TestProvName.Firebird3                          :
+					return "UNICODE_FSS";
+				case ProviderName.MySql                              :
+				case ProviderName.MySqlConnector                     :
+				case TestProvName.MySql55                            :
+				case TestProvName.MariaDB                            :
+					return "utf8_bin";
+				case TestProvName.SqlAzure                           :
+				case ProviderName.SqlServer2000                      :
+				case ProviderName.SqlServer2005                      :
+				case ProviderName.SqlServer2008                      :
+				case ProviderName.SqlServer2012                      :
+				case ProviderName.SqlServer2014                      :
+				case TestProvName.SqlServer2016                      :
+				case ProviderName.SqlServer2017                      :
+				case TestProvName.SqlServer2019                      :
+				case TestProvName.SqlServer2019SequentialAccess      :
+				case TestProvName.SqlServer2019FastExpressionCompiler:
+					return "Albanian_CI_AS";
+				default                                              :
+					return "whatever";
+			}
 		}
 	}
 }

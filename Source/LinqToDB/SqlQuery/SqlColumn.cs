@@ -153,7 +153,7 @@ namespace LinqToDB.SqlQuery
 			if (!Equals(Parent, other.Parent))
 				return false;
 
-			if (Expression.Equals(other.Expression))
+			if (Expression.CanBeNull == other.CanBeNull && QueryHelper.UnwrapExpression(Expression).Equals(QueryHelper.UnwrapExpression(other.Expression)))
 				return true;
 
 			return UnderlyingColumn != null && UnderlyingColumn.Equals(other.UnderlyingColumn);
@@ -171,7 +171,7 @@ namespace LinqToDB.SqlQuery
 #if DEBUG
 				.Append('[').Append(_columnNumber).Append(']')
 #endif
-				.Append(".")
+				.Append('.')
 				.Append(Alias ?? "c")
 				.Append(" => ");
 
@@ -288,7 +288,7 @@ namespace LinqToDB.SqlQuery
 #if DEBUG
 				.Append('[').Append(_columnNumber).Append(']')
 #endif
-				.Append(".")
+				.Append('.')
 				.Append(Alias ?? "c" + (parentIndex >= 0 ? parentIndex + 1 : parentIndex));
 
 			return sb;

@@ -460,7 +460,9 @@ namespace LinqToDB.Linq
 		class GetValueOrDefaultExpressionInfo<T1> : IExpressionInfo, ISetInfo
 			where T1 : struct
 		{
-			static T1? _member = null;
+#pragma warning disable CS0649 // Field is never assigned to...
+			static T1? _member;
+#pragma warning restore CS0649 // Field is never assigned to...
 
 			public LambdaExpression GetExpression(MappingSchema mappingSchema)
 			{
@@ -553,6 +555,7 @@ namespace LinqToDB.Linq
 			{ M(() => string.Concat((string[])null!)                           ), N(() => L<string[],string>                   ((string[] ps)                             => Sql.Concat(ps)))          },
 
 			{ M(() => string.IsNullOrEmpty ("")    ),                                         N(() => L<string,bool>                                   ((string p0)                                                   => p0 == null || p0.Length == 0)) },
+			{ M(() => string.IsNullOrWhiteSpace("")),                                         N(() => L<string,bool>                                   ((string p0)                                                   => Sql.IsNullOrWhiteSpace(p0))) },
 			{ M(() => string.CompareOrdinal("","")),                                          N(() => L<string,string,int>                             ((string s1,string s2)                                         => s1.CompareTo(s2))) },
 			{ M(() => string.CompareOrdinal("",0,"",0,0)),                                    N(() => L<string,int,string,int,int,int>                 ((string s1,int i1,string s2,int i2,int l)                     => s1.Substring(i1, l).CompareTo(s2.Substring(i2, l)))) },
 			{ M(() => string.Compare       ("","")),                                          N(() => L<string,string,int>                             ((string s1,string s2)                                         => s1.CompareTo(s2))) },
@@ -569,6 +572,12 @@ namespace LinqToDB.Linq
 			#region Binary
 
 			{ M(() => ((Binary)null!).Length ), N(() => L<Binary,int>((Binary obj) => Sql.Length(obj)!.Value)) },
+
+			#endregion
+
+			#region Byte[]
+
+			{ M(() => ((byte[])null!).Length ), N(() => L<byte[],int>((byte[] obj) => Sql.Length(obj)!.Value)) },
 
 			#endregion
 

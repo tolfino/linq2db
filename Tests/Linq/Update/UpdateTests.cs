@@ -15,6 +15,7 @@ using NUnit.Framework;
 
 namespace Tests.xUpdate
 {
+	using LinqToDB.Common;
 	using Model;
 
 	[TestFixture]
@@ -1437,9 +1438,7 @@ namespace Tests.xUpdate
 			[Column] public string? col5 { get; set; }
 			[Column] public string? col6 { get; set; }
 
-			public static UpdateFromJoin[] Data = new UpdateFromJoin[]
-			{
-			};
+			public static UpdateFromJoin[] Data = Array<UpdateFromJoin>.Empty;
 		}
 
 		[Table("access_mode")]
@@ -1451,9 +1450,7 @@ namespace Tests.xUpdate
 			[Column]
 			public string? code { get; set; }
 
-			public static AccessMode[] Data = new AccessMode[]
-			{
-			};
+			public static AccessMode[] Data = Array<AccessMode>.Empty;
 		}
 
 		// https://stackoverflow.com/questions/57115728/
@@ -1779,6 +1776,23 @@ namespace Tests.xUpdate
 
 				Assert.That(result[1].Items1, Is.EqualTo("T2" + str));
 				Assert.That(result[1].Items2, Is.EqualTo("Z2" + str));
+
+			}
+		}
+
+		[Test]
+		public void UpdateByAssociation([DataSources] string context)
+		{
+			using (var db = GetDataContext(context))
+			{
+				var id = -1;
+
+				db.Person.Where(_ => _.ID == id)
+					.Select(_ => _.Patient!.Person)
+					.Update(auto6862 => new Person()
+					{
+						LastName = "test"
+					});
 
 			}
 		}
